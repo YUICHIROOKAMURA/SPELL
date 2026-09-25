@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPELLアプローチ実践リファレンス｜発達支援の枠組みを理解する</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500;600;700;900&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1a2744;
+  --navy-deep:#101a2e;
+  --navy-soft:#3a4a6b;
+  --teal:#2a7f7a;
+  --teal-deep:#1e5c58;
+  --teal-pale:#e3f0ee;
+  --amber:#d9a441;
+  --amber-deep:#b3812a;
+  --amber-pale:#faf1de;
+  --cream:#f7f3ea;
+  --cream-deep:#efe8d8;
+  --white:#fffdf8;
+  --ink:#1f2430;
+  --ink-soft:#4a5164;
+  --line:#ddd4bf;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Noto Sans JP',sans-serif;
+  background:var(--cream);
+  color:var(--ink);
+  line-height:1.85;
+  font-weight:400;
+  overflow-x:hidden;
+}
+h1,h2,h3,h4{font-family:'Noto Serif JP',serif;color:var(--navy);}
+.wrap{max-width:760px;margin:0 auto;padding:0 24px;}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:12.5px;letter-spacing:.14em;font-weight:700;
+  color:var(--teal-deep);text-transform:uppercase;
+  margin-bottom:14px;
+}
+.eyebrow::before{content:'';width:22px;height:2px;background:var(--amber);display:inline-block;}
+
+/* ===== nav ===== */
+#nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  background:rgba(26,39,68,0.97);
+  backdrop-filter:blur(6px);
+  padding:12px 0;
+  transform:translateY(-100%);
+  transition:transform .4s ease;
+  box-shadow:0 6px 20px rgba(0,0,0,.15);
+}
+#nav.show{transform:translateY(0);}
+#nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:900px;}
+#nav .navtitle{color:var(--white);font-family:'Noto Serif JP',serif;font-size:14.5px;font-weight:700;white-space:nowrap;}
+#nav .navlinks{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;}
+#nav .navlinks::-webkit-scrollbar{display:none;}
+#nav button{
+  background:none;border:none;color:#c9d2e4;font-family:'Noto Sans JP',sans-serif;
+  font-size:12.5px;padding:7px 10px;border-radius:20px;cursor:pointer;white-space:nowrap;
+  transition:background .2s,color .2s;font-weight:500;
+}
+#nav button:hover,#nav button.active{background:var(--teal);color:#fff;}
+
+/* ===== hero ===== */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;justify-content:center;
+  background:radial-gradient(ellipse at 30% 20%, #24365c 0%, var(--navy) 45%, var(--navy-deep) 100%);
+  color:var(--cream);
+  padding:120px 0 90px;
+  position:relative;
+  overflow:hidden;
+}
+.hero::after{
+  content:'';position:absolute;inset:0;
+  background-image:radial-gradient(circle,rgba(255,255,255,.05) 1px,transparent 1px);
+  background-size:26px 26px;
+  opacity:.5;
+}
+.hero .wrap{position:relative;z-index:2;}
+.hero-eyebrow{color:var(--amber);font-size:12.5px;letter-spacing:.18em;font-weight:700;text-transform:uppercase;margin-bottom:22px;display:block;}
+.hero h1{
+  font-size:clamp(30px,7vw,46px);
+  line-height:1.42;
+  font-weight:700;
+  color:#fff;
+  margin-bottom:24px;
+}
+.hero h1 em{
+  font-style:normal;color:var(--amber);
+  border-bottom:3px solid rgba(217,164,65,.4);
+}
+.hero p.lead{
+  font-size:16.5px;color:#cdd6e8;max-width:560px;margin-bottom:44px;
+  font-weight:400;
+}
+.hero-meta{
+  display:flex;gap:22px;flex-wrap:wrap;
+  font-size:12.5px;color:#93a2c2;border-top:1px solid rgba(255,255,255,.15);padding-top:20px;
+}
+.hero-meta strong{color:var(--cream);display:block;font-size:13.5px;margin-bottom:2px;font-weight:600;}
+
+/* orbit signature */
+.orbit-wrap{margin:52px 0 12px;display:flex;justify-content:center;}
+.orbit{position:relative;width:280px;height:280px;}
+.orbit-center{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:74px;height:74px;border-radius:50%;
+  background:var(--cream);color:var(--navy);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Noto Serif JP',serif;font-weight:700;font-size:12px;text-align:center;
+  box-shadow:0 0 0 6px rgba(247,243,234,.12), 0 0 30px rgba(217,164,65,.25);
+  z-index:5;line-height:1.3;
+}
+.orbit-node{
+  position:absolute;width:58px;height:58px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Noto Serif JP',serif;font-weight:700;font-size:20px;color:#fff;
+  box-shadow:0 4px 14px rgba(0,0,0,.3);
+  animation:pulse 5s ease-in-out infinite;
+}
+.orbit-node span{position:absolute;top:66px;font-size:10.5px;color:#aeb9d4;white-space:nowrap;font-family:'Noto Sans JP',sans-serif;font-weight:500;}
+.orbit-ring{position:absolute;inset:0;border:1px dashed rgba(255,255,255,.14);border-radius:50%;}
+@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.07);}}
+.orbit-node.n1{background:var(--teal);top:0;left:50%;transform:translate(-50%,0);animation-delay:0s;}
+.orbit-node.n2{background:var(--amber);top:32%;right:-4%;animation-delay:.4s;}
+.orbit-node.n3{background:var(--teal-deep);bottom:2%;right:16%;animation-delay:.8s;}
+.orbit-node.n4{background:var(--amber-deep);bottom:2%;left:16%;animation-delay:1.2s;}
+.orbit-node.n5{background:var(--navy-soft);top:32%;left:-4%;animation-delay:1.6s;}
+
+.scrolldown{
+  display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:56px;
+  color:#8b98b8;font-size:11px;letter-spacing:.1em;
+}
+.scrolldown svg{animation:bob 1.8s ease-in-out infinite;}
+@keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(6px);}}
+
+/* ===== sections ===== */
+section{padding:88px 0;position:relative;}
+section.alt{background:var(--white);}
+.section-num{
+  font-family:'Noto Serif JP',serif;font-size:13px;color:var(--amber-deep);
+  font-weight:700;letter-spacing:.05em;margin-bottom:10px;
+}
+h2.sectitle{font-size:clamp(23px,4.4vw,30px);line-height:1.5;margin-bottom:20px;font-weight:700;}
+.lead-text{font-size:16px;color:var(--ink-soft);margin-bottom:34px;max-width:640px;}
+
+.fade-in{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease;}
+.fade-in.visible{opacity:1;transform:translateY(0);}
+
+/* card / callout */
+.card{
+  background:var(--white);border:1px solid var(--line);border-radius:14px;
+  padding:26px 28px;margin-bottom:20px;
+}
+.card.navycard{background:var(--navy);color:var(--cream);border:none;}
+.card.navycard h4{color:#fff;}
+.card.navycard p{color:#c3ceE2;}
+
+.quote-box{
+  border-left:4px solid var(--teal);background:var(--teal-pale);
+  padding:20px 24px;border-radius:0 10px 10px 0;margin:26px 0;
+  font-size:14.5px;color:var(--navy);
+}
+.quote-box .src{display:block;margin-top:10px;font-size:12px;color:var(--teal-deep);font-weight:600;}
+
+/* confidence badge */
+.badge{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11.5px;font-weight:700;padding:4px 12px;border-radius:20px;
+  letter-spacing:.03em;
+}
+.badge.high{background:var(--teal);color:#fff;}
+.badge.mid{background:var(--amber);color:var(--navy-deep);}
+.badge.low{background:var(--navy-soft);color:#fff;}
+.badge-note{font-size:12px;color:var(--ink-soft);margin-top:8px;}
+
+/* triad diagram */
+.triad{display:flex;gap:14px;flex-wrap:wrap;margin:28px 0;}
+.triad-item{
+  flex:1 1 150px;background:var(--cream-deep);border-radius:12px;padding:18px 16px;
+  text-align:center;border:1px solid var(--line);
+}
+.triad-item svg{margin-bottom:10px;}
+.triad-item h5{font-size:13.5px;color:var(--navy);margin-bottom:6px;font-family:'Noto Serif JP',serif;}
+.triad-item p{font-size:12px;color:var(--ink-soft);}
+.triad-arrow{display:flex;align-items:center;justify-content:center;color:var(--amber-deep);font-size:20px;flex:0 0 20px;}
+@media(max-width:560px){.triad{flex-direction:column;}.triad-arrow{transform:rotate(90deg);}}
+
+/* SPELL element blocks */
+.spell-block{
+  border-radius:18px;overflow:hidden;margin-bottom:26px;
+  border:1px solid var(--line);background:var(--white);
+}
+.spell-head{
+  display:flex;align-items:center;gap:18px;padding:22px 26px;cursor:pointer;
+  user-select:none;
+}
+.spell-letter{
+  width:52px;height:52px;border-radius:50%;flex:0 0 52px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Noto Serif JP',serif;font-weight:900;font-size:22px;color:#fff;
+}
+.spell-head h3{font-size:18px;margin-bottom:3px;}
+.spell-head p.sub{font-size:12.5px;color:var(--ink-soft);font-weight:500;}
+.spell-toggle{margin-left:auto;flex:0 0 auto;color:var(--navy-soft);transition:transform .3s;}
+.spell-block.open .spell-toggle{transform:rotate(180deg);}
+.spell-body{
+  max-height:0;overflow:hidden;transition:max-height .5s ease;
+  background:var(--cream);
+}
+.spell-block.open .spell-body{max-height:2400px;}
+.spell-body-inner{padding:6px 26px 30px;}
+.spell-body-inner h5{font-size:13px;color:var(--navy);font-family:'Noto Serif JP',serif;margin:18px 0 8px;}
+.spell-body-inner p{font-size:14.5px;color:var(--ink-soft);margin-bottom:6px;}
+.example-box{
+  background:var(--white);border:1px solid var(--line);border-radius:10px;
+  padding:16px 18px;margin-top:10px;font-size:13.5px;color:var(--ink);
+}
+.example-box .tag{font-size:11px;font-weight:700;color:var(--teal-deep);letter-spacing:.05em;display:block;margin-bottom:6px;}
+
+/* letter colors */
+.c-S{background:var(--teal);} .c-P{background:var(--amber-deep);} .c-E{background:var(--teal-deep);}
+.c-L1{background:var(--navy-soft);} .c-L2{background:#8a6a2e;}
+
+/* interaction diagram */
+.web-wrap{display:flex;justify-content:center;margin:30px 0;}
+.web{position:relative;width:100%;max-width:420px;aspect-ratio:1/1;}
+.web-center{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:110px;height:110px;border-radius:50%;background:var(--navy);color:#fff;
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  font-size:12.5px;font-weight:600;padding:10px;line-height:1.4;z-index:4;
+  box-shadow:0 8px 24px rgba(26,39,68,.25);
+}
+.web-node{
+  position:absolute;width:74px;height:74px;border-radius:50%;color:#fff;
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  font-size:11.5px;font-weight:700;padding:6px;line-height:1.3;z-index:3;
+  box-shadow:0 4px 14px rgba(0,0,0,.18);
+  transform:translate(-50%,-50%);
+}
+.web svg.lines{position:absolute;inset:0;width:100%;height:100%;z-index:1;}
+@media(max-width:420px){
+  .web-node{width:64px;height:64px;font-size:10.5px;}
+  .web-center{width:96px;height:96px;font-size:11px;}
+}
+
+/* checklist */
+.checklist{list-style:none;margin:24px 0;}
+.checklist li{
+  display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);
+  font-size:14.5px;
+}
+.checklist li:last-child{border-bottom:none;}
+.checklist svg{flex:0 0 20px;margin-top:2px;color:var(--teal);}
+.checklist b{color:var(--navy);display:block;margin-bottom:2px;}
+.checklist span.d{color:var(--ink-soft);font-size:13.5px;}
+
+/* critical section */
+.crit-card{
+  background:var(--navy);color:var(--cream);border-radius:16px;padding:30px 30px;margin-bottom:18px;
+}
+.crit-card h4{color:#fff;font-size:16px;margin-bottom:10px;display:flex;align-items:center;gap:10px;}
+.crit-card p{color:#c3ceE2;font-size:14.5px;}
+.crit-card .badge{margin-bottom:12px;}
+
+/* sources */
+.source-list{list-style:none;margin-top:20px;}
+.source-list li{
+  padding:16px 0;border-bottom:1px solid var(--line);
+  display:flex;flex-direction:column;gap:4px;
+}
+.source-list a{color:var(--teal-deep);font-weight:600;text-decoration:none;font-size:14.5px;}
+.source-list a:hover{text-decoration:underline;}
+.source-list .stype{font-size:11px;color:var(--amber-deep);font-weight:700;letter-spacing:.04em;}
+.source-list .sdesc{font-size:12.5px;color:var(--ink-soft);}
+
+footer{
+  background:var(--navy-deep);color:#8b98b8;text-align:center;padding:40px 0;font-size:12.5px;
+}
+
+/* tabs for workplace scenarios */
+.tabbar{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap;}
+.tabbtn{
+  background:var(--white);border:1px solid var(--line);color:var(--navy-soft);
+  font-size:13px;padding:9px 16px;border-radius:22px;cursor:pointer;font-weight:600;
+  transition:all .2s;font-family:'Noto Sans JP',sans-serif;
+}
+.tabbtn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.tabpanel{display:none;}
+.tabpanel.active{display:block;}
+
+@media(max-width:600px){
+  section{padding:64px 0;}
+  .hero{padding:110px 0 70px;}
+  .spell-head{padding:18px;gap:12px;}
+  .spell-letter{width:44px;height:44px;flex:0 0 44px;font-size:19px;}
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="wrap">
+    <span class="navtitle">SPELLアプローチ</span>
+    <div class="navlinks" id="navlinks"></div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="wrap">
+    <span class="hero-eyebrow">発達支援 実践リファレンス</span>
+    <h1>同じ声かけなのに、<br>うまくいく人と<br><em>いかない人</em>がいるのはなぜか。</h1>
+    <p class="lead">SPELLは、自閉スペクトラムのある人への支援を「その人個人の問題」としてではなく「環境と関わり方をどう調整するか」という視点で捉え直す、英国自閉症協会（National Autistic Society）が専門職・当事者とともに作り上げてきた実践の枠組みです。</p>
+    <div class="hero-meta">
+      <div><strong>Structure / Positive / Empathy</strong>Low arousal / Links — 5つの頭文字</div>
+      <div><strong>開発</strong>英国自閉症協会（1990年代〜、Rita Jordan・Stuart Powell・Lorna Wing 他）</div>
+      <div><strong>位置づけ</strong>治療法ではなく、支援者の見方と関わり方を整える「枠組み」</div>
+    </div>
+
+    <div class="orbit-wrap">
+      <div class="orbit">
+        <div class="orbit-ring"></div>
+        <div class="orbit-center">その人<br>らしさ</div>
+        <div class="orbit-node n1">S<span>Structure</span></div>
+        <div class="orbit-node n2">P<span>Positive</span></div>
+        <div class="orbit-node n3">E<span>Empathy</span></div>
+        <div class="orbit-node n4">L<span>Low arousal</span></div>
+        <div class="orbit-node n5">L<span>Links</span></div>
+      </div>
+    </div>
+    <div class="scrolldown">
+      <span>SCROLL</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    </div>
+  </div>
+</header>
+
+<!-- ============ 0. 導入：現場の違和感 ============ -->
+<section id="s0">
+  <div class="wrap fade-in">
+    <div class="section-num">00 — はじめに</div>
+    <h2 class="sectitle">「特性理解」だけでは説明できない、支援の手応えの差</h2>
+    <p class="lead-text">就労移行支援の現場では、ASD（自閉スペクトラム症）の特性そのものは学んでいても、実際の関わりの中で「この声かけは響くのに、あの声かけは響かない」「昨日は落ち着いていたのに今日は違う」という手応えの差に戸惑う場面が少なくありません。</p>
+
+    <div class="card">
+      <p>その差は、支援者側の「熱意」や「経験」の差だけで説明できるものではありません。多くの場合、支援がうまくいくときには——本人にとって見通しが立っている、強みに目が向けられている、感覚的な負荷が抑えられている、といった<b>いくつかの条件が同時に満たされている</b>ことが多いのです。SPELLは、この「うまくいっているときに何が起きているか」を5つの視点に言語化し、意図的に再現できるようにするための枠組みです。</p>
+    </div>
+
+    <div class="quote-box">
+      支援者の役割は、自閉症のある人を「変える」ことではなく、その人が世界をどう体験しているかを理解し、環境と関わり方の側を調整していくことにある——これがSPELLの一貫した立場です。
+      <span class="src">出典：National Autistic Society「The SPELL framework」の趣旨に基づく要約</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 1. SPELLとは何か・成り立ち ============ -->
+<section class="alt" id="s1">
+  <div class="wrap fade-in">
+    <div class="section-num">01 — 成り立ちと位置づけ</div>
+    <h2 class="sectitle">SPELLは「治療プログラム」ではない</h2>
+    <p class="lead-text">名前の響きから特定の技法や訓練プログラムだと誤解されがちですが、実際には性質の異なるものです。まずこの誤解を解いておくことが、SPELLを正しく使う第一歩になります。</p>
+
+    <div class="triad">
+      <div class="triad-item">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#c0392b" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <h5>これではない</h5>
+        <p>症状を「治す」ための臨床的介入・訓練メニュー</p>
+      </div>
+      <div class="triad-arrow">≠</div>
+      <div class="triad-item" style="background:var(--teal-pale);border-color:var(--teal);">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#1e5c58" stroke-width="1.8"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="9"/></svg>
+        <h5>これである</h5>
+        <p>支援者の理解の仕方・環境の作り方を整える「思考の枠組み」</p>
+      </div>
+    </div>
+
+    <p style="color:var(--ink-soft);font-size:14.5px;margin-bottom:18px;">SPELLの起点は、英国自閉症協会（National Autistic Society／NAS）の共同創設者であり精神科医の故Lorna Wingと、その同僚である故Judith Gouldの実践に遡ります。両者はNASが運営する自閉症児のための学校での経験から枠組みの原型を作り、米国ノースカロライナ大学TEACCHプログラムの創始者Eric SchoplerとGary Mesibovの構造化教育の考え方からも影響を受けたことが、公式研修教材の謝辞で明記されています。当初は主に児童の教育場面を対象としていましたが、その後成人期の支援へと適用範囲が拡張され、現在の公式研修教材は「社会福祉・教育・医療・雇用の各領域で使う訓練リソース」と位置づけられています。改訂には自閉当事者であるJoe Powell・Damian Milton・Ann Memmottらが加わり、当事者の視点を反映しながら現在の形に更新され続けています。</p>
+
+    <div class="card">
+      <h4 style="font-size:15.5px;margin-bottom:10px;">なぜ「枠組み」という設計にしたのか</h4>
+      <p style="font-size:14px;color:var(--ink-soft);">自閉スペクトラムの特性の現れ方は一人ひとり大きく異なります。そのため「全員に効くマニュアル」を作るのではなく、支援者が個々の状況で立ち返るための<b>5つの視点（レンズ）</b>を用意する、という設計が選ばれました。SPELLはNASが運営する学校や成人支援機関の実践の共通言語として使われています。</p>
+    </div>
+
+    <h4 style="font-size:15.5px;margin:30px 0 10px;color:var(--navy);">質を担保する仕組み：Autism Accreditation Programme</h4>
+    <p style="font-size:14px;color:var(--ink-soft);margin-bottom:14px;">SPELLは「掲げるだけの理念」で終わらないよう、NAS独自の第三者質保証プログラム「Autism Accreditation Programme」と結びついています。組織が申請書とケーススタディを提出し、関係者への聞き取りや匿名アンケートを含む審査を経て、教育・福祉・刑事司法などの分野別に3種類の認証（Specialist／Inclusion／Friendly Award）のいずれかを取得する仕組みです。ただしNAS自身が明言している通り、これは法定の監督機関による監査ではなく、あくまで自主的な質改善プログラムである点には留意が必要です。</p>
+
+    <h4 style="font-size:15.5px;margin:30px 0 10px;color:var(--navy);">似た名前のアプローチとの違い</h4>
+    <p style="font-size:14px;color:var(--ink-soft);margin-bottom:14px;">現場では「TEACCH」「PBS（Positive Behaviour Support／積極的行動支援）」など、SPELLと混同されやすいアプローチ名を耳にすることがあります。位置づけの違いを整理します。</p>
+    <div style="overflow-x:auto;margin-bottom:10px;">
+    <table style="width:100%;border-collapse:collapse;font-size:13px;min-width:520px;">
+      <thead>
+        <tr style="background:var(--navy);color:#fff;">
+          <th style="padding:10px 12px;text-align:left;font-weight:600;">名称</th>
+          <th style="padding:10px 12px;text-align:left;font-weight:600;">性質</th>
+          <th style="padding:10px 12px;text-align:left;font-weight:600;">SPELLとの関係</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid var(--line);background:var(--white);">
+          <td style="padding:10px 12px;font-weight:700;color:var(--navy);">SPELL</td>
+          <td style="padding:10px 12px;">支援者の見方・環境調整の5つの視点（理念枠組み）</td>
+          <td style="padding:10px 12px;">—</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--line);background:var(--cream-deep);">
+          <td style="padding:10px 12px;font-weight:700;color:var(--navy);">TEACCH</td>
+          <td style="padding:10px 12px;">視覚支援・構造化教育を中心とした具体的な指導技法体系</td>
+          <td style="padding:10px 12px;">SPELLの「Structure」の考え方の主要な源流の一つ</td>
+        </tr>
+        <tr style="background:var(--white);">
+          <td style="padding:10px 12px;font-weight:700;color:var(--navy);">PBS<br><span style="font-weight:400;font-size:11px;color:var(--ink-soft);">積極的行動支援</span></td>
+          <td style="padding:10px 12px;">「困った行動」の背景要因を分析し予防的に対応する技法体系。ABA（応用行動分析）を源流の一つとする</td>
+          <td style="padding:10px 12px;">NASが状況に応じて併用する手法の一つ。ただしABA由来という成り立ちから自閉コミュニティ内でも評価が分かれる</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:12px;color:var(--ink-soft);">SPELLが「理念・視点」であるのに対し、TEACCHやPBSはより具体的な「技法」に近い性質を持ちます。3つは対立するものではなく、NASの実践では組み合わせて使われています。</p>
+  </div>
+</section>
+
+<!-- ============ 2. 三つ組との関係 ============ -->
+<section id="s2">
+  <div class="wrap fade-in">
+    <div class="section-num">02 — 背景にある考え方</div>
+    <h2 class="sectitle">「自閉症の三つ組」への応答としてのSPELL</h2>
+    <p class="lead-text">SPELLを理解する前提として、共同開発者の一人であるLorna Wingが提唱した「自閉症の三つ組（Triad of Impairments）」——ASDの特性が現れやすい3つの領域——を押さえておくと、5つの要素の意図がつながって見えてきます。</p>
+
+    <div class="triad">
+      <div class="triad-item">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2a7f7a" stroke-width="1.8"><path d="M8 12h8M8 8h5M8 16h4"/><rect x="3" y="4" width="18" height="16" rx="2"/></svg>
+        <h5>社会的コミュニケーション</h5>
+        <p>言葉や表情など、意図を伝え合うことの難しさ</p>
+      </div>
+      <div class="triad-item">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2a7f7a" stroke-width="1.8"><circle cx="8" cy="9" r="3"/><circle cx="17" cy="9" r="3"/><path d="M3 20c0-3 2.5-5 5-5s5 2 5 5M12 20c0-3 2.5-5 5-5s4 2 4 5"/></svg>
+        <h5>社会的相互作用</h5>
+        <p>他者との関係の築き方・距離感の取り方の違い</p>
+      </div>
+      <div class="triad-item">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2a7f7a" stroke-width="1.8"><path d="M4 19V5M4 5l7 5-7 5M20 19V5M20 5l-7 5 7 5"/></svg>
+        <h5>想像力・柔軟な思考</h5>
+        <p>見通しの立てにくさ、変化への対応の難しさ</p>
+      </div>
+    </div>
+
+    <p style="color:var(--ink-soft);font-size:14.5px;">この3つの領域そのものに、支援者が直接手を加えることはできません。しかし<b>「本人がどう体験しているか」を理解し、環境や関わり方を調整する</b>ことはできます。SPELLの5要素は、この3領域それぞれから生じる困難に対して、支援者側が調整できる打ち手を体系立てたものだと捉えると理解しやすくなります。</p>
+  </div>
+</section>
+
+<!-- ============ 3. SPELL 5要素 ============ -->
+<section class="alt" id="s3">
+  <div class="wrap fade-in">
+    <div class="section-num">03 — 5つの要素</div>
+    <h2 class="sectitle">SPELLの中身を、ひとつずつ開く</h2>
+    <p class="lead-text">タップして各要素を展開してください。それぞれ「何を指すか」「どういう仕組みで効くと考えられているか」「就労移行支援の現場での具体例」の3段階で説明しています。</p>
+
+    <!-- S -->
+    <div class="spell-block" data-block>
+      <div class="spell-head" data-toggle>
+        <div class="spell-letter c-S">S</div>
+        <div>
+          <h3>Structure（構造）</h3>
+          <p class="sub">見通しを立てられる環境をつくる</p>
+        </div>
+        <svg class="spell-toggle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <div class="spell-body">
+        <div class="spell-body-inner">
+          <h5>何を指すか</h5>
+          <p>「今なにをするのか」「次に何が起きるのか」「いつ終わるのか」が本人にわかる状態を作ること。時間割・作業手順・視覚的なスケジュールなどを通じて、環境を予測可能にします。</p>
+          <h5>なぜ効くと考えられているか</h5>
+          <p>見通しが立たない状況は強い不安や緊張を引き起こしやすく、それ自体が本来の力の発揮を妨げます。構造化によって「わからないこと」を減らすと、不安に使っていた認知的な余力を、目の前の作業や学習に回せるようになります。この考え方はTEACCHプログラム（ノースカロライナ大学）とも共通しており、自閉支援の中でも比較的研究が蓄積されている領域です。</p>
+          <div class="example-box">
+            <span class="tag">就労移行支援での例</span>
+            1日の流れをホワイトボードや紙で視覚化する／作業手順をチェックリスト化する／「今日はここまで」という終わりの基準を事前に明示する／急な予定変更がある場合はできるだけ早く、かつ具体的に伝える。
+          </div>
+          <span class="badge high" style="margin-top:16px;">確度：中〜高（ただし結果は研究間で一致しない）</span>
+          <p class="badge-note">構造化教育（TEACCH系プログラム）の効果研究では、2013年のメタ分析（Virues-Ortega, Julio & Pastor-Barriuso, <i>Clinical Psychology Review</i>）が全体として中〜大程度の肯定的効果を報告した一方、2025年の系統的レビュー（Pakistan Journal of Medical Sciences ほか掲載）ではコミュニケーション・社会性・日常生活動作の領域で統計的に有意な差が確認できなかったと報告されています。つまり「構造化は無意味」でも「万能」でもなく、研究の質・対象年齢・実施の忠実度によって結果が割れている段階だと理解するのが正確です。「万人に同じ構造化が合う」わけでもなく、構造の量や粒度は個別に調整する必要があります。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- P -->
+    <div class="spell-block" data-block>
+      <div class="spell-head" data-toggle>
+        <div class="spell-letter c-P">P</div>
+        <div>
+          <h3>Positive（肯定的アプローチと期待）</h3>
+          <p class="sub">強みを起点に、実現可能な期待を持つ</p>
+        </div>
+        <svg class="spell-toggle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <div class="spell-body">
+        <div class="spell-body-inner">
+          <h5>何を指すか</h5>
+          <p>何が本人を喜ばせ、何に興味関心を持っているかを起点に支援を組み立てること。できないことの指摘や矯正ではなく、強み・関心・得意なやり方を土台にする姿勢です。あわせて、本人が自分の生活や選択にどれだけ主導権を持てているかにも目を向けます。</p>
+          <h5>なぜ効くと考えられているか</h5>
+          <p>失敗経験の積み重ねは自己効力感を下げ、新しい挑戦への意欲を削ぎます。強みを起点にした関わりは成功体験を作りやすく、それが次の挑戦への動機づけにつながります。また、達成できる水準の期待（現実的な期待）を設定することは、過度な要求による不安の増大を防ぐ意味も持ちます。</p>
+          <div class="example-box">
+            <span class="tag">就労移行支援での例</span>
+            訓練メニューを選ぶ際、本人の得意分野・興味から入り口を作る／できなかったことより「前回よりできたこと」に言及する／目標は本人の現在の力より少し上、かつ達成可能な水準に設定する／作業の進め方について本人に選択肢を渡す。
+          </div>
+          <span class="badge mid" style="margin-top:16px;">確度：中</span>
+          <p class="badge-note">強みベースのアプローチや自己効力感に関する知見は心理学全般で広く支持されていますが、「SPELLの枠組みとしての効果」を単独で検証した大規模研究は確認されていません。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- E -->
+    <div class="spell-block" data-block>
+      <div class="spell-head" data-toggle>
+        <div class="spell-letter c-E">E</div>
+        <div>
+          <h3>Empathy（共感）</h3>
+          <p class="sub">本人の側から世界の見え方を想像する</p>
+        </div>
+        <svg class="spell-toggle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <div class="spell-body">
+        <div class="spell-body-inner">
+          <h5>何を指すか</h5>
+          <p>支援者が自分の感覚や価値観を脇に置き、本人が何にわくわくし、何に恐れやストレスを感じ、何にとらわれやすいのかを、判断を挟まず理解しようとする姿勢のことです。NASは「効果的な支援者は、冷静で、予測可能で、ユーモアがあり、共感的で、分析的である」と説明しています。</p>
+          <h5>なぜ効くと考えられているか</h5>
+          <p>行動には必ず理由や機能があります。表面的な行動だけを見て対応すると的外れな支援になりやすい一方、その背景にある体験を理解しようとすることで、より本人に合った対応が選べるようになります。</p>
+          <div class="example-box">
+            <span class="tag">就労移行支援での例</span>
+            「困った行動」の前に何が起きていたかを振り返る／「なぜできないのか」ではなく「何がしんどいのか」を尋ねる／本人の説明を、支援者側の常識で解釈しすぎない。
+          </div>
+          <span class="badge low" style="margin-top:16px;">確度：低〜中（議論あり）</span>
+          <p class="badge-note">重要な留保があります。従来「共感」は自閉当事者側の弱さとして語られがちでしたが、SPELLの改訂に加わった自閉当事者研究者Damian Miltonは「二重共感問題」として、共感のズレは自閉者・非自閉者どちらか一方の欠陥ではなく、異なる認知スタイルを持つ双方の間で起きる相互的な現象だと指摘しています。支援者が「理解してあげる」立場に固定されすぎないよう注意が必要です（詳細は本ページ後半の批判的視点セクションで扱います）。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- L1 -->
+    <div class="spell-block" data-block>
+      <div class="spell-head" data-toggle>
+        <div class="spell-letter c-L1">L</div>
+        <div>
+          <h3>Low arousal（低覚醒・調整レベル）</h3>
+          <p class="sub">刺激を管理し、過負荷を防ぐ</p>
+        </div>
+        <svg class="spell-toggle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <div class="spell-body">
+        <div class="spell-body-inner">
+          <h5>何を指すか</h5>
+          <p>誰にでも「自分に合ったやり方で心身を落ち着かせる機会」が必要だという考え方です。物理的環境（音・光・人の密度など）と社会的環境（求められる対人的やり取りの量）の両方を、本人が過負荷にならない水準に調整します。原語では「低覚醒／自己調整のレベル」と訳される概念で、単に「静かにする」ことだけを意味しません。</p>
+          <h5>なぜ効くと考えられているか</h5>
+          <p>感覚処理の特性により、多くの自閉のある人にとって蛍光灯の明滅・雑音・人混みなどが強いストレス源になり得ます。過負荷（オーバーロード）状態では、思考力・コミュニケーション力が一時的に低下しやすくなります。刺激を管理し、あらかじめ調整の機会を用意しておくことで、過負荷を未然に防ぎやすくなります。</p>
+          <div class="example-box">
+            <span class="tag">就労移行支援での例</span>
+            作業スペースの照明・音環境を見直す／休憩スペースやイヤーマフなど、刺激を落とす手段を選べるようにする／集団作業と個別作業を組み合わせ、対人的負荷を調整する／「疲れる前」に休憩を取れる仕組みにする。
+          </div>
+          <span class="badge high" style="margin-top:16px;">確度：中〜高</span>
+          <p class="badge-note">感覚の過剰反応（sensory over-reactivity）と不安の関連は、Green & Ben-Sasson（2010年のレビュー）やvan Steensel他（2011年のメタ分析、31研究・2,121名対象）など複数の研究で支持されており、この領域は比較的研究の蓄積があります。一方で、感覚環境そのものを調整する介入（照明・音・空間設計等）の効果は、対象別（歯科診療環境など）の個別研究では肯定的な報告が増えているものの、質の高い統合的なエビデンスはまだ限定的です。感覚感受性の現れ方は個人差が非常に大きく、「静かにすればよい」という単純化は避ける必要があります。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- L2 -->
+    <div class="spell-block" data-block>
+      <div class="spell-head" data-toggle>
+        <div class="spell-letter c-L2">L</div>
+        <div>
+          <h3>Links（つながり）</h3>
+          <p class="sub">本人を中心にした支援網をつくる</p>
+        </div>
+        <svg class="spell-toggle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <div class="spell-body">
+        <div class="spell-body-inner">
+          <h5>何を指すか</h5>
+          <p>本人が自分自身を理解し、周囲とのつながりを実感できることを重視する要素です。本人・家族・支援機関・地域といった支援網の間で情報や方針を一貫させること、また本人自身が自分の意思を表明できる力（セルフアドボカシー）を支えることを含みます。</p>
+          <h5>なぜ効くと考えられているか</h5>
+          <p>支援者ごとに対応や方針がばらばらだと、本人にとっての「見通しのなさ」が増し、混乱や不信につながります。関係者間で情報と方針をそろえることは、Structure（構造）の対人版とも言えます。また、自分のことを自分で伝えられる経験は、支援を「されるもの」から「共につくるもの」に変える意味を持ちます。</p>
+          <div class="example-box">
+            <span class="tag">就労移行支援での例</span>
+            職場実習先・家族・医療機関との間で配慮事項の情報を共有し、対応を揃える／本人が自分の特性や必要な配慮を自分の言葉で説明できるよう一緒に整理する（自己理解面談等）／支援者の交代時に引き継ぎを丁寧に行う。
+          </div>
+          <span class="badge mid" style="margin-top:16px;">確度：中</span>
+          <p class="badge-note">支援チーム内の連携・情報共有の重要性は支援全般で広く合意されていますが、「Links」という単位での独立した効果検証は見当たりません。理念的な支柱としての性格が強い要素です。</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ 4. 相互作用 ============ -->
+<section id="s4">
+  <div class="wrap fade-in">
+    <div class="section-num">04 — 要素どうしの関係</div>
+    <h2 class="sectitle">5つは独立したチェック項目ではない</h2>
+    <p class="lead-text">SPELLの開発者たちは当初から、5つの要素が重なり合い、互いに影響し合うテーマであることを強調しています。1つだけを取り出して実践しても効果は限定的で、複数が同時に満たされて初めて機能しやすくなります。</p>
+
+    <div class="web-wrap">
+      <div class="web">
+        <svg class="lines" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <g stroke="#c7bfa4" stroke-width="0.6">
+            <line x1="50" y1="50" x2="50" y2="12"/>
+            <line x1="50" y1="50" x2="86.1" y2="38.3"/>
+            <line x1="50" y1="50" x2="72.3" y2="80.7"/>
+            <line x1="50" y1="50" x2="27.7" y2="80.7"/>
+            <line x1="50" y1="50" x2="13.9" y2="38.3"/>
+          </g>
+        </svg>
+        <div class="web-center">本人が安心して<br>力を発揮できる<br>状態</div>
+        <div class="web-node" style="background:var(--teal);top:12%;left:50%;">構造<br>Structure</div>
+        <div class="web-node" style="background:var(--amber-deep);top:38.3%;left:86.1%;">肯定<br>Positive</div>
+        <div class="web-node" style="background:var(--teal-deep);top:80.7%;left:72.3%;">共感<br>Empathy</div>
+        <div class="web-node" style="background:var(--navy-soft);top:80.7%;left:27.7%;">低覚醒<br>Low arousal</div>
+        <div class="web-node" style="background:#8a6a2e;top:38.3%;left:13.9%;">つながり<br>Links</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p style="font-size:14px;color:var(--ink-soft);">たとえば「構造（S）」だけを厳格に敷いても、本人の興味関心（P）が無視されていれば形式的な予定表になりがちです。逆に「肯定的な期待（P）」を持っていても、感覚的な過負荷（L：低覚醒）が放置されていれば、力を発揮する以前に疲弊してしまいます。<b>ある要素の欠落は、他の要素の効果も弱めてしまう</b>——これがNASの資料が繰り返し強調している点です。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. 批判的視点 ============ -->
+<section class="alt" id="s5">
+  <div class="wrap fade-in">
+    <div class="section-num">05 — 批判的に見る</div>
+    <h2 class="sectitle">SPELLの限界と、押さえておきたい留保</h2>
+    <p class="lead-text">SPELLは支援現場で広く使われている実践知ですが、過大評価しないための視点を3つ挙げます。</p>
+
+    <div class="crit-card">
+      <span class="badge low">留保 1</span>
+      <h4><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>RCTで検証された「介入」ではない</h4>
+      <p>SPELLは専門職・研究者・自閉当事者の協働と実践知の蓄積によって作られた「枠組み」であり、特定の訓練プログラムのように無作為化比較試験（RCT）で効果量が測定されてきたものではありません。SPELLという名称を掲げる複数のWeb記事が「エビデンスベースド」「〇%改善」といった具体的な数値を挙げていますが、一次資料（英国自閉症協会公式サイト）ではそうした統計は示されておらず、出典として使用しないよう注意が必要です。構造化や感覚環境調整など、要素単体の効果研究は個別に存在しますが、SPELLというパッケージ全体としての効果検証ではありません。</p>
+    </div>
+
+    <div class="crit-card">
+      <span class="badge low">留保 2</span>
+      <h4><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M17 11a4 4 0 1 0 0-8"/><path d="M1 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2M23 21v-2a4 4 0 0 0-4-4"/></svg>「Empathy」を一方通行で捉えるリスク</h4>
+      <p>Empathyの要素は「支援者が本人を理解する」という一方向の構図で語られがちですが、自閉当事者研究者Damian Miltonが提唱した「二重共感問題（double empathy problem, 2012）」は、自閉者と非自閉者の間の相互理解のズレは双方向のものであり、自閉者側だけの「欠陥」として扱うべきではないと指摘しています。SPELLの改訂にMilton自身が関わっていることからも、この視点は現在のSPELLの理解に含まれていると考えられますが、実践の現場では「支援者が正しく理解してあげる」という上下関係の発想に陥りやすい点には注意が必要です。</p>
+    </div>
+
+    <div class="crit-card">
+      <span class="badge low">留保 3</span>
+      <h4><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>抽象度が高く、実践の質は運用次第</h4>
+      <p>5つの要素はいずれも抽象度の高い理念であり、「何をどこまでやれば実践できたことになるか」の基準は現場や支援者によって解釈の幅が生まれます。NASはこの点を補うために「SPELL監査」という質評価の仕組みや3日間の有償研修を提供していますが、独学のみでの導入では、表面的な標語の理解にとどまるリスクがあります。個別性を重視する枠組みである以上、「SPELLだからこうすべき」という画一的な運用は、枠組みの趣旨とむしろ矛盾します。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6. 実践チェック ============ -->
+<section id="s6">
+  <div class="wrap fade-in">
+    <div class="section-num">06 — 現場での使い方</div>
+    <h2 class="sectitle">就労移行支援の実践に落とし込む</h2>
+    <p class="lead-text">場面ごとに、SPELLの視点をどう使えるかを整理しました。</p>
+
+    <div class="card" style="margin-bottom:26px;">
+      <h4 style="font-size:14.5px;margin-bottom:8px;">個別化のプロセス：「SPELLプロフィール」という考え方</h4>
+      <p style="font-size:13.5px;color:var(--ink-soft);">NASの資料では、SPELLは5要素をチェックリストとして順に埋める作業ではなく、<b>本人ごとの「個別支援プラン」を組み立てるためのレンズ</b>として使うことが想定されています。実務では、①本人・家族・関係者から情報を集める（アセスメント）、②5つの視点それぞれについて「今どう困っていて、何があると助かるか」を本人の言葉ベースで整理する、③そこから具体的な環境調整・関わり方の方針に落とし込む、④実施後に振り返り、更新する——という循環で運用されることが多く、これは下記のチェックリストの土台になっている考え方です。</p>
+    </div>
+
+    <div class="tabbar" id="tabbar">
+      <button class="tabbtn active" data-tab="t1">個別支援計画</button>
+      <button class="tabbtn" data-tab="t2">日々の訓練場面</button>
+      <button class="tabbtn" data-tab="t3">職場実習・定着支援</button>
+    </div>
+
+    <div class="tabpanel active" id="t1">
+      <ul class="checklist">
+        <li>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+          <div><b>S｜見通しの単位を確認する</b><span class="d">本人にとって「わかりやすい見通し」の単位（1日か、1週間か、1タスクか）を確認できているか。</span></div>
+        </li>
+        <li>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+          <div><b>P｜本人の強み・関心から出発しているか</b><span class="d">計画が「できないことの穴埋め」だけになっていないか、強みを起点にした目標が1つでも入っているか。</span></div>
+        </li>
+        <li>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+          <div><b>L｜感覚・対人負荷の調整策があるか</b><span class="d">本人が疲弊しやすい刺激・場面を把握し、事前に調整の選択肢を用意できているか。</span></div>
+        </li>
+        <li>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+          <div><b>L｜関係者間で方針が揃っているか</b><span class="d">家族・実習先・医療機関などと、伝えている情報や対応にズレがないか。</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="tabpanel" id="t2">
+      <ul class="checklist">
+        <li>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+          <div><b>S｜作業の始まりと終わりが明確か</b><span class="d">「いつ終わるか」がわからない作業は、それだけで不安の要因になり得る。</span></div>
+        </li>
+        <li>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+          <div><b>E｜困った場面の背景を、先に想像してみる</b><span class="d">指導や注意の前に「何がしんどかったのか」を一度自分の中で仮説立ててみる。</span></div>
+        </li>
+        <li>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+          <div><b>L｜休憩のタイミングを本人任せにしすぎない</b><span class="d">「疲れたら言ってね」だけでは申告が難しい人もいる。区切りを支援者側からも用意する。</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="tabpanel" id="t3">
+      <ul class="checklist">
+        <li>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+          <div><b>S｜実習先の一日の流れを事前に可視化する</b><span class="d">初めての環境ほど、事前情報の有無が不安の大きさを左右する。</span></div>
+        </li>
+        <li>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+          <div><b>L｜職場の物理・対人環境を事前に確認する</b><span class="d">照明・音・休憩スペースの有無、声かけの頻度など、負荷になりうる要素を先に把握する。</span></div>
+        </li>
+        <li>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+          <div><b>L（つながり）｜本人が配慮事項を自分の言葉で説明できるか</b><span class="d">職場側との合意形成において、本人自身の説明できる範囲を一緒に整理しておく。</span></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6.5 役割の境界線 ============ -->
+<section class="alt" id="s65">
+  <div class="wrap fade-in">
+    <div class="section-num">07 — 役割の境界線</div>
+    <h2 class="sectitle">どこまでが支援員の役割か</h2>
+    <p class="lead-text">SPELLは非臨床職でも使える平易な言葉で書かれていますが、扱う内容には専門職の判断が必要な領域も隣接しています。就労移行支援スタッフとしてできることと、他職種につなぐべきことの境界を明確にしておきます。</p>
+
+    <div class="triad" style="align-items:stretch;">
+      <div class="triad-item" style="background:var(--teal-pale);border-color:var(--teal);text-align:left;">
+        <h5 style="margin-bottom:10px;">就労移行支援スタッフができること</h5>
+        <p style="font-size:12.5px;line-height:1.7;">見通しを示す・視覚支援を用意する（S）／強みを起点に目標設定を行う（P）／行動の背景を想像し記録する（E）／刺激を減らす環境調整、休憩の仕組み化（L）／関係者間の情報共有、本人の自己理解を促す面談（L）</p>
+      </div>
+      <div class="triad-item" style="background:var(--amber-pale);border-color:var(--amber);text-align:left;">
+        <h5 style="margin-bottom:10px;">専門職への相談・つなぎが必要なこと</h5>
+        <p style="font-size:12.5px;line-height:1.7;">感覚特性の医学的評価や診断（医師・作業療法士）／強い自傷・他害等の危機対応（医療・専門機関）／二次障害（うつ・不安症等）が疑われる症状の評価（医師・心理職）／服薬や治療方針に関わる助言／家族関係の深刻な対立への介入</p>
+      </div>
+    </div>
+    <p style="font-size:12.5px;color:var(--ink-soft);margin-top:8px;">SPELLの実践は「本人の困りごとを観察し、環境調整のアイデアを試す」までが中心的な役割であり、背景にある医学的・心理的評価そのものを支援員が下すものではない、という線引きを意識しておくと安全に運用できます。</p>
+  </div>
+</section>
+
+<!-- ============ 7. まとめ ============ -->
+<section class="alt" id="s7">
+  <div class="wrap fade-in">
+    <div class="section-num">08 — まとめ</div>
+    <h2 class="sectitle">SPELLが問うているのは、支援者側の姿勢</h2>
+    <div class="card navycard">
+      <p style="font-size:15px;">SPELLの5つの要素は、いずれも「本人を変える」ための技法ではなく、「支援者が何を見て、何を調整するか」という視点の集合です。エビデンスの強さは要素ごとに差があり、パッケージ全体としての効果が統計的に実証されているわけではありません。それでも30年以上にわたり現場で参照され続けてきたのは、抽象的な理念にとどまらず、具体的な問いかけ（見通しはあるか、強みは見えているか、負荷は管理されているか、本人はつながれているか）として使える実用性があるからだと考えられます。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8. 出典 ============ -->
+<section id="s8">
+  <div class="wrap fade-in">
+    <div class="section-num">09 — 情報源</div>
+    <h2 class="sectitle">参考・出典</h2>
+    <ul class="source-list">
+      <li>
+        <span class="stype">一次資料</span>
+        <a href="https://www.autism.org.uk/learn/what-we-do/training/the-spell-framework" target="_blank" rel="noopener">National Autistic Society「The SPELL framework」</a>
+        <span class="sdesc">SPELLの定義・5要素の公式説明、開発の経緯についての一次情報。</span>
+      </li>
+      <li>
+        <span class="stype">一次資料（関連理論）</span>
+        <a href="https://kar.kent.ac.uk/62639/1/Double%20empathy%20problem.pdf" target="_blank" rel="noopener">Milton, D. (2012). On the ontological status of autism: the 'double empathy problem'. Disability & Society, 27(6).</a>
+        <span class="sdesc">「二重共感問題」の原論文。批判的視点セクションの根拠。</span>
+      </li>
+      <li>
+        <span class="stype">解説記事</span>
+        <a href="https://www.autism.org.uk/learn/knowledge-hub/professional-practice/double-empathy" target="_blank" rel="noopener">National Autistic Society「The double empathy problem」</a>
+        <span class="sdesc">二重共感問題についてのNAS自身による平易な解説。</span>
+      </li>
+      <li>
+        <span class="stype">背景情報</span>
+        <a href="https://www.unitedresponse.org.uk/resource/spell/" target="_blank" rel="noopener">United Response「The SPELL framework」</a>
+        <span class="sdesc">SPELLが英国の支援機関でどう位置づけられているかの補足情報。PBSとの関係にも言及。</span>
+      </li>
+      <li>
+        <span class="stype">公式研修教材</span>
+        <a href="https://learn.pavpub.com/courses/spell-framework-self-study-guide/" target="_blank" rel="noopener">Beadle-Brown, J. & Mills, R.「Understanding and Responding to Autism – The SPELL Framework」(2nd ed., Pavilion Publishing, 2018) 関連ページ</a>
+        <span class="sdesc">現行の公式研修教材。謝辞ページにLorna Wing・Judith Gould・TEACCHとの関係が明記されている。</span>
+      </li>
+      <li>
+        <span class="stype">一次資料（質保証）</span>
+        <a href="https://www.autism.org.uk/what-we-do/autism-know-how/autism-accreditation" target="_blank" rel="noopener">National Autistic Society「Autism Accreditation」</a>
+        <span class="sdesc">SPELLと結びつく質保証プログラムについての公式説明。</span>
+      </li>
+      <li>
+        <span class="stype">一次資料（関連手法）</span>
+        <a href="https://www.autism.org.uk/advice-and-guidance/positive-behaviour-support-pbs" target="_blank" rel="noopener">National Autistic Society「Positive Behaviour Support (PBS)」</a>
+        <span class="sdesc">NASによるPBSの位置づけの説明。SPELLとの違いの整理に使用。</span>
+      </li>
+      <li>
+        <span class="stype">エビデンス（構造化教育）</span>
+        <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12505950/" target="_blank" rel="noopener">Efficacy of structured teaching program for rehabilitation of children with ASD: A systematic review and meta-analysis (2025)</a>
+        <span class="sdesc">構造化教育の効果について、領域によって有意差が確認できなかったとする近年の系統的レビュー。</span>
+      </li>
+      <li>
+        <span class="stype">エビデンス（感覚と不安）</span>
+        <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7290113/" target="_blank" rel="noopener">The Sensory Abnormalities and Neuropsychopathology of Autism and Anxiety（文献レビュー、van Steensel et al. 2011のメタ分析を含む）</a>
+        <span class="sdesc">感覚過敏と不安の関連についてのエビデンスの整理。</span>
+      </li>
+    </ul>
+    <p style="font-size:12px;color:var(--ink-soft);margin-top:22px;">※本資料の作成にあたり、SPELLに関する数値的な効果検証（改善率・被験者数等）を主張する複数のウェブ記事を確認しましたが、一次資料での裏付けが取れなかったため、それらの数値は採用していません。</p>
+  </div>
+</section>
+
+<footer>
+  岡村雄一郎
+</footer>
+
+<script>
+// ---- nav generation & scroll spy ----
+const sections = [
+  {id:'s0',label:'はじめに'},
+  {id:'s1',label:'成り立ち'},
+  {id:'s2',label:'三つ組'},
+  {id:'s3',label:'5要素'},
+  {id:'s4',label:'相互作用'},
+  {id:'s5',label:'批判的視点'},
+  {id:'s6',label:'実践チェック'},
+  {id:'s65',label:'役割の境界線'},
+  {id:'s7',label:'まとめ'},
+  {id:'s8',label:'出典'}
+];
+const navlinks = document.getElementById('navlinks');
+sections.forEach(s=>{
+  const b=document.createElement('button');
+  b.textContent=s.label;
+  b.dataset.target=s.id;
+  b.onclick=()=>scrollToSection(s.id);
+  navlinks.appendChild(b);
+});
+function scrollToSection(id){
+  const el=document.getElementById(id);
+  if(el){ window.scrollTo({top: el.offsetTop-64, behavior:'smooth'}); }
+}
+
+const navEl = document.getElementById('nav');
+window.addEventListener('scroll', ()=>{
+  if(window.scrollY > window.innerHeight*0.7){ navEl.classList.add('show'); }
+  else{ navEl.classList.remove('show'); }
+
+  let current = sections[0].id;
+  sections.forEach(s=>{
+    const el=document.getElementById(s.id);
+    if(el && el.getBoundingClientRect().top < 140){ current = s.id; }
+  });
+  document.querySelectorAll('#navlinks button').forEach(b=>{
+    b.classList.toggle('active', b.dataset.target===current);
+  });
+}, {passive:true});
+
+// ---- fade-in on scroll ----
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){ e.target.classList.add('visible'); }
+  });
+}, {threshold:0.12});
+document.querySelectorAll('.fade-in').forEach(el=>observer.observe(el));
+
+// ---- accordion ----
+document.querySelectorAll('[data-toggle]').forEach(head=>{
+  head.addEventListener('click', ()=>{
+    const block = head.closest('[data-block]');
+    block.classList.toggle('open');
+  });
+});
+// open first one by default
+document.querySelector('[data-block]').classList.add('open');
+
+// ---- tabs ----
+document.querySelectorAll('.tabbtn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tabbtn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tabpanel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab).classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
